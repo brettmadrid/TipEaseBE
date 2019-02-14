@@ -1,4 +1,11 @@
-// Update with your config settings.
+const localPgConnection = {
+  host: 'localhost', // address to find the db server
+  database: 'tipease',
+  user: '',
+  password: ''
+};
+
+const dbConnection = process.env.DATABASE_URL || localPgConnection;
 
 module.exports = {
   development: {
@@ -15,7 +22,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL,
+    connection: dbConnection,
     migrations: {
       directory: './data/migrations'
     },
