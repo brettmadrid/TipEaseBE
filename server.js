@@ -1,9 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const db = require('./database/dbHelpers');
 
 const server = express();
+const secret = process.env.SECRET;
+
+const generateToken = user => {
+  const payload = {
+    accountType: user.accountType,
+    username: user.username,
+    id: user.id
+  };
+  const options = {
+    expiresIn: '3h'
+  };
+
+  return jwt.sign(payload, secret, options);
+};
 
 server.use(express.json());
 server.use(cors());
@@ -11,6 +27,43 @@ server.use(cors());
 //sanity check endpoint
 server.get('/', (req, res) => {
   res.send("It's Alive!!");
+});
+
+server.get('/customers', (req, res) => {
+  db.getCustomers().then(cus => {
+    res.json(cus);
+  });
+});
+
+// register endpoint
+server.post('/api/register', async (req, res) => {
+  const user = req.body;
+  user.password = bcrypt.hashSync(user.password, 12);
+  try {
+    const ids = await db.insertUser(user);
+    res.status(201).json({ count: ids.rowCount });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+// login endpoint
+server.post('/api/login', (req, res) => {
+  const creds = req.body;
+  db.findByUsername(creds.username)
+    .then(user => {
+      if (user && bcrypt.compareSync(creds.password, user.password)) {
+        const token = generateToken(user);
+        res.json({ id: user.id, token });
+      } else {
+        res.status(404).json({
+          error: 'Invalid credentials were entered. Please try again.'
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send('Error');
+    });
 });
 
 // endpoint that will be used when a customer is logged in and wants to look through list of workers

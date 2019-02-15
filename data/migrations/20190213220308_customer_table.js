@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
       .notNullable()
       .unique();
     customer.string('password').notNullable();
-    customer.string('role').notNullable();
+    customer.string('accountType').notNullable();
   });
 };
 

@@ -7,7 +7,7 @@ exports.up = function(knex, Promise) {
       .notNullable()
       .unique();
     worker.string('password').notNullable();
-    worker.string('role').notNullable();
+    worker.string('accountType').notNullable();
     worker.string('fname');
     worker.string('lname');
     worker.string('jobTitle');
