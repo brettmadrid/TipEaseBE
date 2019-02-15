@@ -8,6 +8,17 @@ const db = require('./database/dbHelpers');
 const server = express();
 const secret = process.env.SECRET;
 
+const authorize = (req, res, next) => {
+  const token = req.headers.authorization;
+  token
+    ? jwt.verify(token, secret, (err, decoded) => {
+        err
+          ? res.status(401).json({ message: 'Invalid token received' })
+          : next();
+      })
+    : res.status(401).json({ message: 'No token received' });
+};
+
 const generateToken = user => {
   const payload = {
     accountType: user.accountType,
