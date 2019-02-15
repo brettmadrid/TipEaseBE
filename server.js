@@ -59,22 +59,26 @@ server.post('/api/register', async (req, res) => {
 });
 
 // login endpoint
-server.post('/api/login', (req, res) => {
+server.post('/api/login', async (req, res) => {
   const creds = req.body;
-  db.findByUsername(creds.username)
-    .then(user => {
-      if (user && bcrypt.compareSync(creds.password, user.password)) {
-        const token = generateToken(user);
-        res.json({ id: user.id, token });
-      } else {
-        res.status(404).json({
-          error: 'Invalid credentials were entered. Please try again.'
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send('Error');
-    });
+  // .then(user => {
+  try {
+    const user = await db.findByUsername(creds.username);
+    if (user && bcrypt.compareSync(creds.password, user.password)) {
+      const token = generateToken(user);
+      res.json({ id: user.id, token });
+    } else {
+      res.status(404).json({
+        error: 'Invalid credentials were entered. Please try again.'
+      });
+    }
+  } catch (err) {
+    res.status(500).send('Error');
+  }
+  // })
+  // .catch(err => {
+  //   res.status(500).send('Error');
+  // });
 });
 
 // endpoint that will be used when a customer is logged in and wants to look through list of workers
