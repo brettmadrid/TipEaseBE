@@ -89,7 +89,7 @@ server.post('/api/login', async (req, res) => {
 });
 
 // endpoint that will be used when a customer is logged in and wants to look through list of workers
-server.use('/api/customer', customerRouter);
+server.use('/api/customer', authorize, customerRouter);
 
 server.use('/api/worker', workerRouter);
 
