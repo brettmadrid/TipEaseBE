@@ -8,7 +8,9 @@ module.exports = {
   insertUser,
   findByUsername,
   sendTipToWorker,
-  getWorkerProfile
+  getWorkerProfile,
+  deleteWorker,
+  updateWorker
 };
 
 function getCustomers() {
@@ -83,4 +85,16 @@ function getWorkerProfile(id) {
       'totalTips'
     )
     .where({ id });
+}
+
+function deleteWorker(id) {
+  return db('workers')
+    .where({ id })
+    .del();
+}
+
+function updateWorker(id, changes) {
+  return db('workers')
+    .where({ id })
+    .update(changes);
 }

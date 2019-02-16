@@ -15,6 +15,7 @@ const authorize = (req, res, next) => {
   const token = req.headers.authorization;
   token
     ? jwt.verify(token, secret, (err, decoded) => {
+        console.log(decoded);
         err
           ? res.status(401).json({ message: 'Invalid token received' })
           : next();
