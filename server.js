@@ -6,6 +6,7 @@ const multer = require('multer');
 
 const db = require('./database/dbHelpers');
 const customerRouter = require('./customerRoutes');
+const workerRouter = require('./workerRoutes');
 
 const server = express();
 const secret = process.env.SECRET;
@@ -90,9 +91,6 @@ server.post('/api/login', async (req, res) => {
 // endpoint that will be used when a customer is logged in and wants to look through list of workers
 server.use('/api/customer', customerRouter);
 
-// need endpoint for:
-//    updating worker profile
-//    deleting worker profile (should only have access to their own)
-//    workers to upload a profile picture
+server.use('/api/worker', workerRouter);
 
 module.exports = server;

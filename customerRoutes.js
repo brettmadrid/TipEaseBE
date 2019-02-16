@@ -16,8 +16,8 @@ router.get('/', async (req, res) => {
 // endpoint for a customer to send a tip to a specific worker
 router.post('/worker/:id', async (req, res, next) => {
   // need worker id to query the DB
-  // need tip amount
   const { id } = req.params;
+  // need tip amount
   const { tip } = req.body;
 
   if (!tip) {

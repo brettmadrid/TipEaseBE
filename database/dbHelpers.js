@@ -7,7 +7,8 @@ module.exports = {
   getAllWorkersInfo,
   insertUser,
   findByUsername,
-  sendTipToWorker
+  sendTipToWorker,
+  getWorkerProfile
 };
 
 function getCustomers() {
@@ -62,8 +63,24 @@ async function sendTipToWorker(workerId, tip) {
     .update({ totalTips: curTotalTips });
 
   return updateTotalTips ? 'Tip Received' : 'Tip was not received';
+
+  function sumTips(pt, t) {
+    return pt + t;
+  }
 }
 
-function sumTips(ct, t) {
-  return ct + t;
+function getWorkerProfile(id) {
+  return db('workers')
+    .select(
+      'id',
+      'photo',
+      'username',
+      'accountType',
+      'fname',
+      'lname',
+      'jobTitle',
+      'tagline',
+      'totalTips'
+    )
+    .where({ id });
 }
