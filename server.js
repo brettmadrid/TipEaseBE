@@ -2,8 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 
 const db = require('./database/dbHelpers');
+const customerRouter = require('./customerRoutes');
 
 const server = express();
 const secret = process.env.SECRET;
@@ -40,19 +42,28 @@ server.get('/', (req, res) => {
   res.send("It's Alive!!");
 });
 
+//*************************************************/
+// Admin endpoints to see what is on the DBs
 server.get('/customers', (req, res) => {
   db.getCustomers().then(cus => {
     res.json(cus);
   });
 });
 
+server.get('/workers', (req, res) => {
+  db.getAllWorkersInfo().then(workers => {
+    res.json(workers);
+  });
+});
+//**************************************************
+
 // register endpoint
 server.post('/api/register', async (req, res) => {
   const user = req.body;
   user.password = bcrypt.hashSync(user.password, 12);
   try {
-    const ids = await db.insertUser(user);
-    res.status(201).json({ count: ids.rowCount });
+    const response = await db.insertUser(user);
+    res.status(201).json({ count: response.rowCount });
   } catch (err) {
     res.status(500).json({ error: err });
   }
@@ -61,7 +72,6 @@ server.post('/api/register', async (req, res) => {
 // login endpoint
 server.post('/api/login', async (req, res) => {
   const creds = req.body;
-  // .then(user => {
   try {
     const user = await db.findByUsername(creds.username);
     if (user && bcrypt.compareSync(creds.password, user.password)) {
@@ -75,20 +85,14 @@ server.post('/api/login', async (req, res) => {
   } catch (err) {
     res.status(500).send('Error');
   }
-  // })
-  // .catch(err => {
-  //   res.status(500).send('Error');
-  // });
 });
 
 // endpoint that will be used when a customer is logged in and wants to look through list of workers
-server.get('/api/workers', async (req, res) => {
-  try {
-    const workers = await db.getWorkers();
-    res.json(workers);
-  } catch (err) {
-    res.status(500).json({ error: 'an error has occured' });
-  }
-});
+server.use('/api/customer', customerRouter);
+
+// need endpoint for:
+//    updating worker profile
+//    deleting worker profile (should only have access to their own)
+//    workers to upload a profile picture
 
 module.exports = server;

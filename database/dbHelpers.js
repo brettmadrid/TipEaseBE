@@ -4,8 +4,10 @@ const db = require('./dbConfig');
 module.exports = {
   getCustomers,
   getWorkers,
+  getAllWorkersInfo,
   insertUser,
-  findByUsername
+  findByUsername,
+  sendTipToWorker
 };
 
 function getCustomers() {
@@ -22,6 +24,10 @@ function getWorkers() {
     'jobTitle',
     'tagline'
   );
+}
+
+function getAllWorkersInfo() {
+  return db('workers');
 }
 
 function insertUser(user) {
@@ -42,4 +48,22 @@ async function findByUsername(username) {
     .first();
 
   return worker ? worker : customer ? customer : null;
+}
+
+async function sendTipToWorker(workerId, tip) {
+  // query DB to get specific workors totalTips, then sum up the current total with the amount that the customer is sending
+  const prevTotalTips = await db('workers')
+    .select('totalTips')
+    .where('id', workerId);
+  const curTotalTips = await sumTips(prevTotalTips[0].totalTips, tip);
+
+  const updateTotalTips = await db('workers')
+    .where('id', workerId)
+    .update({ totalTips: curTotalTips });
+
+  return updateTotalTips ? 'Tip Received' : 'Tip was not received';
+}
+
+function sumTips(ct, t) {
+  return ct + t;
 }
