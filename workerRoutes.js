@@ -4,11 +4,11 @@ const db = require('./database/dbHelpers');
 const router = express.Router();
 // root is '/api/worker'
 // need endpoint for:
-//    viewing worker profile when worker signs in
 //    updating worker profile
 //    deleting worker profile (should only have access to their own)
 //    workers to upload a profile picture
 
+// viewing worker profile when worker signs in
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
