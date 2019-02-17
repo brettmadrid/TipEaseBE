@@ -13,9 +13,13 @@ module.exports = {
   updateWorker
 };
 
-function getCustomers() {
-  return db('customers');
-}
+// function getCustomers() {
+//   return db('customers');
+// }
+
+// function getAllWorkersInfo() {
+//   return db('workers');
+// }
 
 function getWorkers() {
   return db('workers').select(
@@ -27,10 +31,6 @@ function getWorkers() {
     'jobTitle',
     'tagline'
   );
-}
-
-function getAllWorkersInfo() {
-  return db('workers');
 }
 
 function insertUser(user) {
