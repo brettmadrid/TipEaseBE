@@ -15,6 +15,7 @@ const authorize = (req, res, next) => {
   const token = req.headers.authorization;
   token
     ? jwt.verify(token, secret, (err, decoded) => {
+        console.log(decoded);
         err
           ? res.status(401).json({ message: 'Invalid token received' })
           : next();
@@ -45,28 +46,33 @@ server.get('/', (req, res) => {
 
 //*************************************************/
 // Admin endpoints to see what is on the DBs
-server.get('/customers', (req, res) => {
-  db.getCustomers().then(cus => {
-    res.json(cus);
-  });
-});
+// server.get('/customers', (req, res) => {
+//   db.getCustomers().then(cus => {
+//     res.json(cus);
+//   });
+// });
 
-server.get('/workers', (req, res) => {
-  db.getAllWorkersInfo().then(workers => {
-    res.json(workers);
-  });
-});
+// server.get('/workers', (req, res) => {
+//   db.getAllWorkersInfo().then(workers => {
+//     res.json(workers);
+//   });
+// });
 //**************************************************
 
 // register endpoint
 server.post('/api/register', async (req, res) => {
   const user = req.body;
+  const { username, password, accountType, fname, lname, jobTitle } = user;
+
+  if (!(username && password && accountType && fname && lname && jobTitle)) {
+    return res.status(400).send('Please fill in all required fields');
+  }
   user.password = bcrypt.hashSync(user.password, 12);
   try {
     const response = await db.insertUser(user);
     res.status(201).json({ count: response.rowCount });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.detail });
   }
 });
 

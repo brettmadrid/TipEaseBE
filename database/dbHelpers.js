@@ -2,18 +2,24 @@ const express = require('express');
 const db = require('./dbConfig');
 
 module.exports = {
-  getCustomers,
+  // getCustomers,
+  // getAllWorkersInfo,
   getWorkers,
-  getAllWorkersInfo,
   insertUser,
   findByUsername,
   sendTipToWorker,
-  getWorkerProfile
+  getWorkerProfile,
+  deleteWorker,
+  updateWorker
 };
 
-function getCustomers() {
-  return db('customers');
-}
+// function getCustomers() {
+//   return db('customers');
+// }
+
+// function getAllWorkersInfo() {
+//   return db('workers');
+// }
 
 function getWorkers() {
   return db('workers').select(
@@ -25,10 +31,6 @@ function getWorkers() {
     'jobTitle',
     'tagline'
   );
-}
-
-function getAllWorkersInfo() {
-  return db('workers');
 }
 
 function insertUser(user) {
@@ -83,4 +85,16 @@ function getWorkerProfile(id) {
       'totalTips'
     )
     .where({ id });
+}
+
+function deleteWorker(id) {
+  return db('workers')
+    .where({ id })
+    .del();
+}
+
+function updateWorker(id, changes) {
+  return db('workers')
+    .where({ id })
+    .update(changes);
 }
