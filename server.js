@@ -62,6 +62,11 @@ server.get('/workers', (req, res) => {
 // register endpoint
 server.post('/api/register', async (req, res) => {
   const user = req.body;
+  const { username, password, accountType, fname, lname, jobTitle } = user;
+
+  if (!(username && password && accountType && fname && lname && jobTitle)) {
+    return res.status(400).send('Please fill in all required fields');
+  }
   user.password = bcrypt.hashSync(user.password, 12);
   try {
     const response = await db.insertUser(user);
