@@ -72,7 +72,7 @@ server.post('/api/register', async (req, res) => {
     const response = await db.insertUser(user);
     res.status(201).json({ count: response.rowCount });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.detail });
   }
 });
 
