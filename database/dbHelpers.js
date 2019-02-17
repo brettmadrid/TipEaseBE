@@ -2,9 +2,9 @@ const express = require('express');
 const db = require('./dbConfig');
 
 module.exports = {
-  getCustomers,
+  // getCustomers,
+  // getAllWorkersInfo,
   getWorkers,
-  getAllWorkersInfo,
   insertUser,
   findByUsername,
   sendTipToWorker,
