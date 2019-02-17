@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('workers', worker => {
     worker.increments();
-    worker.binary('photo');
+    worker.string('photo');
     worker
       .string('username')
       .notNullable()

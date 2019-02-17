@@ -10,7 +10,9 @@ module.exports = {
   sendTipToWorker,
   getWorkerProfile,
   deleteWorker,
-  updateWorker
+  updateWorker,
+  storeImagePath,
+  findWorkerById
 };
 
 // function getCustomers() {
@@ -97,4 +99,16 @@ function updateWorker(id, changes) {
   return db('workers')
     .where({ id })
     .update(changes);
+}
+
+function storeImagePath(id, path) {
+  return db('workers')
+    .where({ id })
+    .update({ photo: path });
+}
+
+function findWorkerById(id) {
+  return db('workers')
+    .select('id')
+    .where({ id });
 }
