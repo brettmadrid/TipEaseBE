@@ -116,7 +116,12 @@ server.post('/api/register', async (req, res) => {
   user.password = bcrypt.hashSync(user.password, 12);
   try {
     const response = await db.insertUser(user);
-    res.status(201).json({ count: response.rowCount });
+
+    response
+      ? res.status(201).json({ count: response.rowCount })
+      : res.status(409).json({
+          msg: 'Username is taken. Please choose a different username'
+        });
   } catch (err) {
     res.status(500).json({ error: err.detail });
   }

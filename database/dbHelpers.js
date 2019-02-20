@@ -35,12 +35,17 @@ function getWorkers() {
   );
 }
 
-function insertUser(user) {
-  return user.accountType === 'customer'
-    ? db('customers').insert(user)
-    : user.accountType === 'worker'
-    ? db('workers').insert(user)
-    : null;
+async function insertUser(user) {
+  const alreadyTaken = await findByUsername(user.username);
+
+  if (!alreadyTaken) {
+    return user.accountType === 'customer'
+      ? db('customers').insert(user)
+      : user.accountType === 'worker'
+      ? db('workers').insert(user)
+      : null;
+  }
+  return null;
 }
 
 async function findByUsername(username) {
