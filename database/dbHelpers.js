@@ -2,8 +2,8 @@ const express = require('express');
 const db = require('./dbConfig');
 
 module.exports = {
-  // getCustomers,
-  // getAllWorkersInfo,
+  getCustomers,
+  getAllWorkersInfo,
   getWorkers,
   insertUser,
   findByUsername,
@@ -15,13 +15,13 @@ module.exports = {
   findWorkerById
 };
 
-// function getCustomers() {
-//   return db('customers');
-// }
+function getCustomers() {
+  return db('customers');
+}
 
-// function getAllWorkersInfo() {
-//   return db('workers');
-// }
+function getAllWorkersInfo() {
+  return db('workers');
+}
 
 function getWorkers() {
   return db('workers')
