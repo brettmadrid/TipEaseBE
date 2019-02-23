@@ -24,15 +24,17 @@ module.exports = {
 // }
 
 function getWorkers() {
-  return db('workers').select(
-    'id',
-    'photo',
-    'accountType',
-    'fname',
-    'lname',
-    'jobTitle',
-    'tagline'
-  );
+  return db('workers')
+    .select(
+      'id',
+      'photo',
+      'accountType',
+      'fname',
+      'lname',
+      'jobTitle',
+      'tagline'
+    )
+    .orderBy('id');
 }
 
 async function insertUser(user) {
