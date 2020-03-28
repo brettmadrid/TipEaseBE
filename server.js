@@ -86,17 +86,17 @@ server.get("/", (req, res) => {
 
 //*************************************************/
 // Admin endpoints to see what is on the DBs
-// server.get('/customers', (req, res) => {
-//   db.getCustomers().then(cus => {
-//     res.json(cus);
-//   });
-// });
+server.get("/customers", (req, res) => {
+  db.getCustomers().then(cus => {
+    res.json(cus);
+  });
+});
 
-// server.get('/workers', (req, res) => {
-//   db.getAllWorkersInfo().then(workers => {
-//     res.json(workers);
-//   });
-// });
+server.get("/workers", (req, res) => {
+  db.getAllWorkersInfo().then(workers => {
+    res.json(workers);
+  });
+});
 //**************************************************
 
 // register endpoint
