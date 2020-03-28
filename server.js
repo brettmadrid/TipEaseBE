@@ -1,24 +1,24 @@
-const express = require('express');
-const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const path = require('path');
+const express = require("express");
+const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 
-const db = require('./database/dbHelpers');
-const customerRouter = require('./customerRoutes');
-const workerRouter = require('./workerRoutes');
+const db = require("./database/dbHelpers");
+const customerRouter = require("./routes/customerRoutes");
+const workerRouter = require("./routes/workerRoutes");
 
 const server = express();
 const secret = process.env.SECRET;
 
 // set storage engine
 const storage = multer.diskStorage({
-  destination: './public/uploads/',
+  destination: "./public/uploads/",
   filename: function(req, file, cb) {
     cb(
       null,
-      file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
     );
   }
 });
@@ -30,7 +30,7 @@ const upload = multer({
   fileFilter: function(req, file, cb) {
     checkFileType(file, cb);
   }
-}).single('profilePic');
+}).single("profilePic");
 
 // Check file type
 function checkFileType(file, cb) {
@@ -44,7 +44,7 @@ function checkFileType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb('Error: Images only');
+    cb("Error: Images only");
   }
 }
 
@@ -54,10 +54,10 @@ const authorize = (req, res, next) => {
     ? jwt.verify(token, secret, (err, decoded) => {
         // console.log(decoded);
         err
-          ? res.status(401).json({ message: 'Invalid token received' })
+          ? res.status(401).json({ message: "Invalid token received" })
           : next();
       })
-    : res.status(401).json({ message: 'No token received' });
+    : res.status(401).json({ message: "No token received" });
 };
 
 const generateToken = user => {
@@ -77,10 +77,10 @@ server.use(express.json());
 server.use(cors());
 
 // Public folder
-server.use(express.static('./public'));
+server.use(express.static("./public"));
 
 //sanity check endpoint
-server.get('/', (req, res) => {
+server.get("/", (req, res) => {
   res.send("It's Alive!!");
 });
 
@@ -100,17 +100,17 @@ server.get('/', (req, res) => {
 //**************************************************
 
 // register endpoint
-server.post('/api/register', async (req, res) => {
+server.post("/api/register", async (req, res) => {
   const user = req.body;
   const { username, password, accountType, fname, lname, jobTitle } = user;
 
-  if (user.accountType === 'worker') {
+  if (user.accountType === "worker") {
     if (!(username && password && accountType && fname && lname && jobTitle)) {
-      return res.status(400).send('Please fill in all required fields');
+      return res.status(400).send("Please fill in all required fields");
     }
   } else {
     if (!(username && password && accountType)) {
-      return res.status(400).send('Please fill in all required fields');
+      return res.status(400).send("Please fill in all required fields");
     }
   }
   user.password = bcrypt.hashSync(user.password, 12);
@@ -120,7 +120,7 @@ server.post('/api/register', async (req, res) => {
     response
       ? res.status(201).json({ count: response.rowCount })
       : res.status(409).json({
-          msg: 'Username is taken. Please choose a different username'
+          msg: "Username is taken. Please choose a different username"
         });
   } catch (err) {
     res.status(500).json({ error: err.detail });
@@ -128,7 +128,7 @@ server.post('/api/register', async (req, res) => {
 });
 
 // login endpoint
-server.post('/api/login', async (req, res) => {
+server.post("/api/login", async (req, res) => {
   const creds = req.body;
   try {
     const user = await db.findByUsername(creds.username);
@@ -137,16 +137,16 @@ server.post('/api/login', async (req, res) => {
       res.json({ id: user.id, token });
     } else {
       res.status(404).json({
-        error: 'Invalid credentials were entered. Please try again.'
+        error: "Invalid credentials were entered. Please try again."
       });
     }
   } catch (err) {
-    res.status(500).send('Error');
+    res.status(500).send("Error");
   }
 });
 
 // Image upload endpoint
-server.post('/upload/:id', authorize, async (req, res) => {
+server.post("/upload/:id", authorize, async (req, res) => {
   const { id } = req.params;
 
   const isInDatabase = await db.findWorkerById(id);
@@ -157,13 +157,13 @@ server.post('/upload/:id', authorize, async (req, res) => {
         return res.json({ inUpload: err });
       } else {
         if (!req.file) {
-          return res.send('Error: No File Selected!');
+          return res.send("Error: No File Selected!");
         } else {
           db.storeImagePath(id, req.file.path)
             .then(count => {
               count
-                ? res.send('Image Uploaded Successfully')
-                : res.status(400).send('Image not uploaded');
+                ? res.send("Image Uploaded Successfully")
+                : res.status(400).send("Image not uploaded");
             })
             .catch(err => {
               res.status(500).json(err);
@@ -172,13 +172,13 @@ server.post('/upload/:id', authorize, async (req, res) => {
       }
     });
   } else {
-    res.status(404).json({ msg: 'profile not found' });
+    res.status(404).json({ msg: "profile not found" });
   }
 });
 
 // endpoint that will be used when a customer is logged in and wants to look through list of workers
-server.use('/api/customer', authorize, customerRouter);
+server.use("/api/customer", authorize, customerRouter);
 
-server.use('/api/worker', authorize, workerRouter);
+server.use("/api/worker", authorize, workerRouter);
 
 module.exports = server;

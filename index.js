@@ -1,7 +1,7 @@
-require('dotenv').config(); // load the .env content
-const server = require('./server');
+require("dotenv").config(); // load the .env content
+const server = require("./server");
 
-const port = process.env.PORT || 4040;
+const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
   console.log(`listening on port ${port}`);

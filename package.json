@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon",
+    "server": "nodemon index.js",
     "start": "node index.js"
   },
   "repository": "https://github.com/tipease/back-end.git",
@@ -11,8 +11,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "jest": "^24.1.0",
-    "nodemon": "^1.18.10",
-    "supertest": "^3.4.2"
+    "nodemon": "^1.18.10"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

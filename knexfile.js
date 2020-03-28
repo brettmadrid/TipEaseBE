@@ -1,34 +1,27 @@
-const localPgConnection = {
-  host: 'localhost', // address to find the db server
-  database: 'tipease',
-  user: '',
-  password: ''
-};
-
-const dbConnection = process.env.DATABASE_URL || localPgConnection;
+// Update with your config settings.
 
 module.exports = {
   development: {
-    client: 'pg',
-    connection: 'postgres://localhost/tipease',
-    migrations: {
-      directory: './data/migrations'
-    },
-    seeds: {
-      directory: './data/seeds/dev'
+    client: "sqlite3",
+    connection: {
+      filename: "./database/tipease.db3"
     },
     useNullAsDefault: true
   },
 
   production: {
-    client: 'pg',
-    connection: dbConnection,
+    client: "postgresql",
+    connection: {
+      database: "my_db",
+      user: "username",
+      password: "password"
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
     migrations: {
-      directory: './data/migrations'
-    },
-    seeds: {
-      directory: './data/seeds/production'
-    },
-    useNullAsDefault: true
+      tableName: "knex_migrations"
+    }
   }
 };
