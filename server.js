@@ -86,17 +86,17 @@ server.get("/", (req, res) => {
 
 //*************************************************/
 // Admin endpoints to see what is on the DBs
-server.get("/customers", (req, res) => {
-  db.getCustomers().then(cus => {
-    res.json(cus);
-  });
-});
+// server.get("/customers", (req, res) => {
+//   db.getCustomers().then(cus => {
+//     res.json(cus);
+//   });
+// });
 
-server.get("/workers", (req, res) => {
-  db.getAllWorkersInfo().then(workers => {
-    res.json(workers);
-  });
-});
+// server.get("/workers", (req, res) => {
+//   db.getAllWorkersInfo().then(workers => {
+//     res.json(workers);
+//   });
+// });
 //**************************************************
 
 // register endpoint
@@ -130,10 +130,13 @@ server.post("/api/register", async (req, res) => {
 // login endpoint
 server.post("/api/login", async (req, res) => {
   const creds = req.body;
+  console.log("creds", creds);
   try {
     const user = await db.findByUsername(creds.username);
+    console.log("user", user);
     if (user && bcrypt.compareSync(creds.password, user.password)) {
       const token = generateToken(user);
+      console.log("token", token);
       res.json({ id: user.id, token });
     } else {
       res.status(404).json({

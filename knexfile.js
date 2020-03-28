@@ -2,8 +2,8 @@ require("dotenv").config();
 const localPg = {
   host: "localhost",
   database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS
+  user: "",
+  password: ""
 };
 
 const dbConnection = process.env.DATABASE_URL || localPg;
